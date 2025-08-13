@@ -166,12 +166,11 @@
 
 
 
-
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getPayload } from 'payload';
-import type { CollectionSlug } from 'payload'; // ✅ add this
+import type { CollectionSlug } from 'payload';
 
 dotenv.config({ path: path.resolve(process.cwd(), './.env') });
 
@@ -187,6 +186,32 @@ if (!process.env.DATABASE_URI) {
   process.exit(1);
 }
 
+// ===== Helper to create Rich Text =====
+function createRichText(text: string) {
+  return {
+    root: {
+      type: 'doc',
+      version: 1,
+      children: [
+        {
+          type: 'paragraph',
+          version: 1,
+          children: [
+            {
+              type: 'text',
+              version: 1,
+              text,
+            },
+          ],
+        },
+      ],
+      direction: null,
+      format: '' as "" | "left" | "start" | "center" | "right" | "end" | "justify",
+      indent: 0,
+    },
+  };
+}
+
 async function main() {
   try {
     console.log('🚀 Manual seed: starting...');
@@ -195,7 +220,7 @@ async function main() {
     const pl = await getPayload({ config });
     console.log('✅ Payload initialized');
 
-    // ✅ fixed type for "collection"
+    // ===== Helper to create a document if it doesn't exist =====
     async function createIfNotExists(
       collection: CollectionSlug,
       where: any,
@@ -224,7 +249,7 @@ async function main() {
       tenantId: string,
       name: string,
       email: string,
-      role = 'attendee',
+      role: 'attendee' | 'organizer' | 'admin' = 'attendee',
       password = 'Password123!'
     ) => {
       const found = await pl.find({
@@ -234,9 +259,10 @@ async function main() {
         depth: 0,
       });
       if (found?.totalDocs > 0) return found.docs[0];
+
       return await pl.create({
         collection: 'users',
-        data: { name, email, password, role, tenant: tenantId },
+        data: { name, email, password, role, tenant: tenantId } as const,
       });
     };
 
@@ -267,16 +293,17 @@ async function main() {
         depth: 0,
       });
       if (found?.totalDocs > 0) return found.docs[0];
+
       return await pl.create({
         collection: 'events',
         data: {
           title,
-          description: title,
-          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysFromNow).toISOString(),
+          description: createRichText(title),
+          date: new Date(Date.now() + 1000 * 60 * 60 * 24 * daysFromNow),
           capacity,
           organizer: organizerId,
           tenant: tenantId,
-        },
+        } as any,
       });
     };
 
@@ -305,9 +332,9 @@ async function main() {
         data: {
           event: eventId,
           user: userId,
-          tenant: tenantId, 
+          tenant: tenantId,
           status: 'confirmed',
-        },
+        } as const,
       });
     };
 
