@@ -115,19 +115,42 @@ export const Bookings: CollectionConfig = {
           });
         };
 
-        const createLog = async (action: string, note?: string) => {
-          await req.payload.create({
-            collection: 'booking-logs',
-            data: {
-              booking: doc.id,
-              event: (doc as any).event,
-              user: (doc as any).user,
-              action,
-              note: note || '',
-              tenant: (doc as any).tenant,
-            },
-          });
-        };
+        // const createLog = async (action: string, note?: string) => {
+        //   await req.payload.create({
+        //     collection: 'booking-logs',
+        //     data: {
+        //       booking: doc.id,
+        //       event: (doc as any).event,
+        //       user: (doc as any).user,
+        //       action,
+        //       note: note || '',
+        //       tenant: (doc as any).tenant,
+        //     },
+        //   });
+        // };
+
+        const createLog = async (
+  action:
+    | 'create_request'
+    | 'auto_waitlist'
+    | 'auto_confirm'
+    | 'promote_from_waitlist'
+    | 'cancel_confirmed',
+  note?: string
+) => {
+  await req.payload.create({
+    collection: 'booking-logs',
+    data: {
+      booking: doc.id,
+      event: (doc as any).event,
+      user: (doc as any).user,
+      action,
+      note: note || '',
+      tenant: (doc as any).tenant,
+    },
+  });
+};
+
 
         if (operation === 'create') {
           if (newStatus === BOOKING_STATUS.CONFIRMED) {
