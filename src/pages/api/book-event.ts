@@ -66,16 +66,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const event = ev.docs[0];
     if (!event) return res.status(404).json({ error: 'Event not found' });
 
-    // Create booking with event, user, tenant, and a default status
+    // Create booking
     const newBooking = await payload.create({
       collection: 'bookings',
       data: {
         event: eventId,
         user: user.id,
         tenant: event.tenant,
-        status: 'waitlisted', // 
+        status: 'waitlisted', // default value to fix TS error
       },
-      req,
     });
 
     return res.status(201).json(newBooking);
