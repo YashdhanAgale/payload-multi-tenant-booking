@@ -15,7 +15,7 @@ export const Events: CollectionConfig = {
       type: 'richText',
       required: false,
     },
-    { name: 'date', type: 'datetime', required: true },
+    { name: 'date', type: 'date', required: true },
     { name: 'capacity', type: 'number', required: true },
     {
       name: 'organizer',
