@@ -98,7 +98,7 @@ export const Bookings: CollectionConfig = {
           userId: string,
           bookingId: string,
           tenantId: string,
-          type: string,
+          type: 'booking_confirmed' | 'waitlisted' | 'waitlist_promoted' | 'booking_canceled',
           title: string,
           message: string
         ) => {
