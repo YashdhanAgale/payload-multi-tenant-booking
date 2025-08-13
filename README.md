@@ -1,67 +1,62 @@
-# Payload Blank Template
+Multi-Tenant Event Booking System – Payload CMS
+Overview
+A backend system built with Payload CMS to manage events across multiple organizations (tenants) with strict data isolation.
+Features include capacity enforcement, waitlisting, automatic promotions, notifications, and an organizer dashboard with live stats.
 
-This template comes configured with the bare minimum to get started on anything you need.
+Key Features
+Multi-Tenancy – All records tied to a tenant with backend-enforced access rules.
 
-## Quick start
+Smart Booking Flow – Auto-confirm if seats available, waitlist if full, promote oldest waitlisted on cancellations.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+Notifications & Logs – Created automatically for every booking status change.
 
-## Quick Start - local setup
+Organizer Dashboard – Event counts, capacity usage, summary stats, and recent activity feed.
 
-To spin up this template locally, follow these steps:
+Seed Script – Quickly populate tenants, users, events, and bookings for testing.
 
-### Clone
+Tech Stack
+Backend: Node.js + Payload CMS
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+Database: MongoDB
 
-### Development
+Deployment: Vercel
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+Setup
+bash
+Copy
+Edit
+git clone <repo-url>
+cd <project-folder>
+npm install
+Create .env from .env.example:
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+ini
+Copy
+Edit
+DATABASE_URI=<your-mongodb-uri>
+PAYLOAD_SECRET=<your-secret>
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
 
-#### Docker (Optional)
+bash
+Copy
+Edit
+npx tsx src/scripts/seed-manual.ts
+Run locally: npm run dev
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+bash
+Copy
+Edit
+npm run dev
+Admin panel: http://localhost:3000/admin
 
-To do so, follow these steps:
+Demo Credentials
+Admin – admin@example.com / Password123!
+Organizer – t1org@example.com / Password123!
+Attendee – t1a1@example.com / Password123!
 
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+Deployment
+Push to a private GitHub repo.
 
-## How it works
+Deploy to Vercel.
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
-
-### Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
-
-- #### Users (Authentication)
-
-  Users are auth-enabled collections that have access to the admin panel.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-- #### Media
-
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
-
-### Docker
-
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
-
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
-
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Add .env variables in project settings.
