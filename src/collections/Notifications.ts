@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload'
 
 export const Notifications: CollectionConfig = {
   slug: 'notifications',
@@ -6,10 +6,16 @@ export const Notifications: CollectionConfig = {
     useAsTitle: 'title',
   },
   access: {
-    read: ({ req: { user } }) => !!user,
-    update: ({ req: { user } }) => !!user,
-    create: () => true, 
-    delete: ({ req: { user } }) => !!user && user.role === 'admin',
+    read: ({ req: { user } }) => {
+      if (!user) return false
+      return { user: { equals: user.id } } // Users only see their own notifications
+    },
+    update: ({ req: { user }, id }) => {
+      if (!user) return false
+      return { user: { equals: user.id } } // Users can only mark their own as read
+    },
+    create: () => false, // Only created via hooks
+    delete: ({ req: { user } }) => user?.role === 'admin',
   },
   fields: [
     {
@@ -45,4 +51,4 @@ export const Notifications: CollectionConfig = {
       required: true,
     },
   ],
-};
+}

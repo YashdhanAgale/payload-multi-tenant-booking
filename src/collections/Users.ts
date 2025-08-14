@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -7,18 +7,18 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   access: {
-    // logged-in users can read their own user; admin/organizer will see tenant users via hooks/api
     read: ({ req: { user } }) => {
-      if (!user) return false;
-      return true; 
+      if (!user) return false
+      if (user.role === 'admin') return true
+      return { id: { equals: user.id } } // Users can only read themselves
     },
-    update: ({ req: { user } }) => {
-      if (!user) return false;
-      
-      return true;
+    update: ({ req: { user }, id }) => {
+      if (!user) return false
+      if (user.role === 'admin') return true
+      return { id: { equals: user.id } } // Users can only update themselves
     },
-    create: () => false, 
-    delete: ({ req: { user } }) => !!user && user.role === 'admin',
+    create: ({ req: { user } }) => user?.role === 'admin', // Only admins can create users
+    delete: ({ req: { user } }) => user?.role === 'admin',
   },
   fields: [
     { name: 'name', type: 'text', required: true },
@@ -40,4 +40,4 @@ export const Users: CollectionConfig = {
       required: true,
     },
   ],
-};
+}

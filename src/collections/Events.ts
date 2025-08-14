@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig, Where } from 'payload'
 
 export const Events: CollectionConfig = {
   slug: 'events',
@@ -6,7 +6,31 @@ export const Events: CollectionConfig = {
     useAsTitle: 'title',
   },
   access: {
-    read: () => true, 
+    read: ({ req: { user } }) => {
+      if (!user) return false
+      // Only show events from user's tenant
+      return {
+        tenant: { equals: user.tenant as string }, // type-safe
+      } as Where
+    },
+    create: ({ req: { user } }) => {
+      if (!user) return false
+      return ['organizer', 'admin'].includes(user.role)
+    },
+    update: ({ req: { user }, id }) => {
+      if (!user) return false
+
+      if (user.role === 'admin') return true
+
+      // Organizer can only update their own events
+      return {
+        and: [{ tenant: { equals: user.tenant as string } }, { organizer: { equals: user.id } }],
+      } as Where
+    },
+    delete: ({ req: { user } }) => {
+      if (!user) return false
+      return user.role === 'admin'
+    },
   },
   fields: [
     { name: 'title', type: 'text', required: true },
@@ -30,4 +54,4 @@ export const Events: CollectionConfig = {
       required: true,
     },
   ],
-};
+}

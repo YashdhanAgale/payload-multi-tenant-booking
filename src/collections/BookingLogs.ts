@@ -1,15 +1,25 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload'
 
 export const BookingLogs: CollectionConfig = {
   slug: 'booking-logs',
   admin: {
     useAsTitle: 'action',
   },
+  // access: {
+  //   read: ({ req: { user } }) => !!user,
+  //   create: () => true,
+  //   delete: ({ req: { user } }) => !!user && user.role === 'admin',
+  // },
+
   access: {
-    read: ({ req: { user } }) => !!user,
-    create: () => true,
-    delete: ({ req: { user } }) => !!user && user.role === 'admin',
+    read: ({ req: { user } }) => {
+      if (!user) return false
+      return { tenant: { equals: user.tenant } }
+    },
+    create: () => false,
+    delete: ({ req: { user } }) => user?.role === 'admin',
   },
+
   fields: [
     {
       name: 'booking',
@@ -52,4 +62,4 @@ export const BookingLogs: CollectionConfig = {
       required: true,
     },
   ],
-};
+}
