@@ -5,11 +5,6 @@ export const BookingLogs: CollectionConfig = {
   admin: {
     useAsTitle: 'action',
   },
-  // access: {
-  //   read: ({ req: { user } }) => !!user,
-  //   create: () => true,
-  //   delete: ({ req: { user } }) => !!user && user.role === 'admin',
-  // },
 
   access: {
     read: ({ req: { user } }) => {

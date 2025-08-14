@@ -36,7 +36,6 @@ Edit
 DATABASE_URI=<your-mongodb-uri>
 PAYLOAD_SECRET=<your-secret>
 
-
 bash
 Copy
 Edit
@@ -49,7 +48,7 @@ Edit
 npm run dev
 Admin panel: http://localhost:3000/admin
 
-Demo Credentials
+Demo Credentials -
 Admin – admin@example.com / Password123!
 Organizer – t1org@example.com / Password123!
 Attendee – t1a1@example.com / Password123!
